@@ -1,57 +1,152 @@
-## Simple linear regression.
+"""
+Simple Linear Regression example.
 
-'''
-This basic script uses NumPy and Matplotlib to perform a simple linear regression on
-randomly generated data, and visualizes the regression line over a scatter plot.
-'''
+This script demonstrates simple linear regression on randomly generated data.
+It includes functions for data generation, linear regression computation,
+and visualisation using matplotlib and statsmodels.
+"""
 
-# Import necessary libraries.
+# Import dependencies
 import numpy as np
 import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from statsmodels.stats.diagnostic import het_breuschpagan
 
-# Set number of data points to be simulated for both variables.
-numValues = 50
+def generate_data(num_values: int = 50, x_start: float = 0, x_end: float = 10) -> tuple:
+    """Generate random data with noise.
 
-# Generate data x-values.
-xStart = 0 # Set starting x-value.
-xEnd = 10 # Set ending x-value.
-x = np.linspace(xStart, xEnd, numValues) # Generate array of values using given parameters.
+    Parameters:
+    - num_values (int): Number of data points to generate.
+    - x_start (float): Starting value for the independent variable.
+    - x_end (float): Ending value for the independent variable.
 
-# Generate random data y-value noise.
-noiseMean = np.random.randint(10) # Generate random mean value.
-noiseStdDev = np.random.randint(10) # Generate random standard deviation value.
-noise = np.random.normal(noiseMean, noiseStdDev, numValues) # Generate array of values using given parameters.
+    Returns:
+    tuple: Two NumPy arrays representing the independent and dependent variables.
+    """
+    x = np.linspace(x_start, x_end, num_values)
 
-# Generate noisy data y-values.
-yStart = 0 # Set starting y-value.
-yEnd = np.random.randint(-10, 10) # Use random ending y-value to simulate positive/negative trending data.
-y = np.linspace(yStart, yEnd, numValues) + noise # Generate array of values using given parameters
+    # Generate random noise with specified mean and standard deviation.
+    noise_mean = np.random.randint(10)
+    noise_std_dev = np.random.randint(10)
+    noise = np.random.normal(noise_mean, noise_std_dev, num_values)
 
-# Initialise array to store linear regression prediction values.
-predictions = np.zeros_like(y) # Create array of zeros of same size as y.
+    # Create dependent variable with random slope and noise.
+    y_start = 0
+    y_end = np.random.randint(-10, 10)
+    y = np.linspace(y_start, y_end, num_values) + noise
 
-# Get parameters of data for regression computation.
-xMean = np.mean(x) # Get mean of data x-values.
-yMean = np.mean(y) # Get mean of data y-values.
+    return x, y
 
-# Perform least squares method.
-slope = np.sum((x - xMean) *  (y - yMean)) / np.sum((x - xMean)**2) # Get slope of data.
-intercept = yMean - (slope * xMean) # Get y-intercept of data.
+def compute_regression_parameters(x: np.ndarray, y: np.ndarray) -> tuple:
+    """Compute the slope and intercept for linear regression.
 
-# Display regression computation parameters, for transparency.
-print('Slope: ', slope) # Display slope.
-print('Intercept: ', intercept) # Display y-intercept.
+    Parameters:
+    - x (np.ndarray): Independent variable data.
+    - y (np.ndarray): Dependent variable data.
 
-# Perform simple linear regression equation.
-predictions = intercept + (slope * x) # Produce regression line prediction of dependent variable.
+    Returns:
+    tuple: Computed slope and intercept for linear regression.
+    """
+    x_mean = np.mean(x)
+    y_mean = np.mean(y)
 
-# Plot data and prediction.
-plt.scatter(x, y, color = 'blue', label = 'Data') # Plot data.
-plt.plot(x, predictions, color='red', label = 'Prediction') # Plot  regression line.
-plt.title('Simple Linear Regression on Randomly Generated Data. \n', fontsize = 11, fontweight = 'bold') # Add title.
-plt.xlabel('Indepedent variable') # Add x-axis label.
-plt.ylabel('Dependent variable') # Add y-axis label.
-plt.xticks(np.arange(xStart, xEnd + 1)) # Include all integers in x-axis ticks.
-plt.legend() # Add legend.
-plt.grid(True, alpha = 0.5) # Add grid lines.
-plt.show() # Display plot.
+    # Compute slope and intercept
+    slope = np.sum((x - x_mean) * (y - y_mean)) / np.sum((x - x_mean)**2)
+    intercept = y_mean - (slope * x_mean)
+
+    return slope, intercept
+
+def perform_linear_regression(x: np.ndarray, slope: float, intercept: float) -> np.ndarray:
+    """Perform linear regression based on given slope and intercept.
+
+    Parameters:
+    - x (np.ndarray): Independent variable data.
+    - slope (float): Computed slope for linear regression.
+    - intercept (float): Computed intercept for linear regression.
+
+    Returns:
+    np.ndarray: Predicted values based on linear regression.
+    """
+    predictions = intercept + (slope * x)
+    return predictions
+
+def display_regression_parameters(slope: float, intercept: float) -> None:
+    """Display the computed slope and intercept.
+
+    Parameters:
+    - slope (float): Computed slope for linear regression.
+    - intercept (float): Computed intercept for linear regression.
+    """
+    print('Slope:', slope)
+    print('Intercept:', intercept)
+
+def plot_data_and_regression(x: np.ndarray, y: np.ndarray, predictions: np.ndarray) -> None:
+    """Plot the original data and the regression line.
+
+    Parameters:
+    - x (np.ndarray): Independent variable data.
+    - y (np.ndarray): Dependent variable data.
+    - predictions (np.ndarray): Predicted values based on linear regression.
+    """
+    plt.scatter(x, y, color='blue', label='Data')
+    plt.plot(x, predictions, color='red', label='Prediction')
+    plt.title('Simple Linear Regression on Randomly Generated Data.\n', fontsize=11, fontweight='bold')
+    plt.xlabel('Independent variable')
+    plt.ylabel('Dependent variable')
+    plt.xticks(np.arange(min(x), max(x) + 1))
+    plt.legend()
+    plt.grid(True, alpha=0.5)
+    plt.show()
+    
+def analyse_regression(x: np.ndarray, y: np.ndarray) -> None:
+    """Perform linear regression analysis.
+
+    Parameters:
+    - x (np.ndarray): Independent variable data.
+    - y (np.ndarray): Dependent variable data.
+    """
+    x_with_intercept = sm.add_constant(x)
+
+    model = sm.OLS(y, x_with_intercept)
+    results = model.fit()
+
+    print(results.summary())
+    
+def plot_residuals(x: np.ndarray, residuals: np.ndarray) -> None:
+    """Plot the residuals of the linear regression.
+
+    Parameters:
+    - x (np.ndarray): Independent variable data.
+    - residuals (np.ndarray): Residuals of the linear regression.
+    """
+    plt.scatter(x, residuals, color='green', label='Residuals')
+    plt.axhline(y=0, color='black', linestyle='--', label='Zero Residuals Line')
+    plt.title('Residuals of Linear Regression\n', fontsize=11, fontweight='bold')
+    plt.xlabel('Independent variable')
+    plt.ylabel('Residuals')
+    plt.xticks(np.arange(min(x), max(x) + 1))
+    plt.legend()
+    plt.grid(True, alpha=0.5)
+    plt.show()
+
+def main() -> None:
+    """Main function to run the linear regression example."""
+    # Generate data.
+    num_values = 1000
+    x, y = generate_data(num_values)
+
+    # Fit model to data.
+    slope, intercept = compute_regression_parameters(x, y)
+    display_regression_parameters(slope, intercept)
+    predictions = perform_linear_regression(x, slope, intercept)
+    plot_data_and_regression(x, y, predictions)
+    
+    # Statistically analyse model.
+    analyse_regression(x, y)
+
+    # Calculate residuals.
+    residuals = y - predictions
+    plot_residuals(x, residuals)
+
+if __name__ == "__main__":
+    main()
