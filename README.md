@@ -1,6 +1,7 @@
 # Simple Linear Regression example
 
-This repository contains a Python script demonstrating simple linear regression on randomly generated data. The script utilises functions for data generation, linear regression computation, and visualisation using Matplotlib and Statsmodels. The purpose of this script was to allow me to develop and practice my skills in producing clean Python code, as well as test my mathematical understanding of linear regression.
+This repository contains a Python script demonstrating simple linear regression on randomly generated data. The script utilises functions for data generation, linear regression computation, and visualisation using Matplotlib and Statsmodels. 
+The purpose of this script was to allow me to develop and practice my skills in producing clean Python code, as well as test my mathematical understanding of linear regression.
 
 ## Overview
 
