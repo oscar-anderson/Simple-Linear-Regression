@@ -129,7 +129,7 @@ def plot_residuals(x: np.ndarray, residuals: np.ndarray) -> None:
     plt.grid(True, alpha=0.5)
     plt.show()
 
-def main() -> None:
+def simulateRegression() -> None:
     """Main function to run the linear regression example."""
     # Generate data.
     num_values = 1000
@@ -148,5 +148,5 @@ def main() -> None:
     residuals = y - predictions
     plot_residuals(x, residuals)
 
-if __name__ == "__main__":
-    main()
+# Call main function to run simulation.
+simulateRegression()
