@@ -88,14 +88,14 @@ def plot_data_and_regression(x: np.ndarray, y: np.ndarray, predictions: np.ndarr
     - y (np.ndarray): Dependent variable data.
     - predictions (np.ndarray): Predicted values based on linear regression.
     """
-    plt.scatter(x, y, color='blue', label='Data')
-    plt.plot(x, predictions, color='red', label='Prediction')
-    plt.title('Simple Linear Regression on Randomly Generated Data.\n', fontsize=11, fontweight='bold')
+    plt.scatter(x, y, color = 'blue', label = 'Data')
+    plt.plot(x, predictions, color ='red', label = 'Prediction')
+    plt.title('Simple Linear Regression on Randomly Generated Data.\n', fontsize = 11, fontweight='bold')
     plt.xlabel('Independent variable')
     plt.ylabel('Dependent variable')
     plt.xticks(np.arange(min(x), max(x) + 1))
     plt.legend()
-    plt.grid(True, alpha=0.5)
+    plt.grid(True, alpha = 0.5)
     plt.show()
     
 def analyse_regression(x: np.ndarray, y: np.ndarray) -> None:
@@ -119,14 +119,14 @@ def plot_residuals(x: np.ndarray, residuals: np.ndarray) -> None:
     - x (np.ndarray): Independent variable data.
     - residuals (np.ndarray): Residuals of the linear regression.
     """
-    plt.scatter(x, residuals, color='green', label='Residuals')
-    plt.axhline(y=0, color='black', linestyle='--', label='Zero Residuals Line')
-    plt.title('Residuals of Linear Regression\n', fontsize=11, fontweight='bold')
+    plt.scatter(x, residuals, color = 'green', label = 'Residuals')
+    plt.axhline(y = 0, color = 'black', linestyle = '--', label = 'Zero Residuals Line')
+    plt.title('Residuals of Linear Regression\n', fontsize = 11, fontweight = 'bold')
     plt.xlabel('Independent variable')
     plt.ylabel('Residuals')
     plt.xticks(np.arange(min(x), max(x) + 1))
     plt.legend()
-    plt.grid(True, alpha=0.5)
+    plt.grid(True, alpha = 0.5)
     plt.show()
 
 def simulateRegression() -> None:
